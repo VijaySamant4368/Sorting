@@ -6,38 +6,45 @@
   <title>Sorting Algorithm Visualizer</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="container">
     <h1>Sorting Algorithm Visualizer</h1>
-    
     <div class="controls">
-      <button id="next">Next step</button>
-      <button id="play">Play</button>
+      <button id="next" style="display: none;">Next step</button>
+      <button id="play" style="display: none;">Play</button>
+    </div>
+    <div class="controls">
       <button id="startBubbleSort">Start Bubble Sort</button>
       <button id="startSelectionSort">Start Selection Sort</button>
       <button id="startInsertionSort">Start Insertion Sort</button>
     </div>
 
+    
+  <p>
+    <div id="first" class="text" style="display: none;">
+        <div id="sortName"></div>
+        <div id="nums"></div>
+        <div id="comment"></div>
+    </div>
+    <br>
+    <div id="second" style="display: none;">
+        Saved Value <div id="value"></div>
+    </div>
+  </p>
+
     <div class="array-container">
       <div id="array-bar-container"></div>
     </div>
 
+    
+
     <div class="controls">
       <button id="randomizeArray">Randomize Array</button>
+      <button id="stop">Stop</button>
     </div>
   </div>
 
-  <p>
-    <div id="first" class="text">
-        Performing <div id="sortName"></div>
-        Comapring <div id="num1"></div> and <div id="num2"></div>
-        <div id="comment"></div>
-    </div>
-    <br>
-    <div id="second">
-        Saved Value <div id="value"></div>
-    </div>
-  </p>
 
   <script src="scripts.js"></script>
 </body>

@@ -3,14 +3,18 @@ const c1 = 'red';   //What is selected
 const c2 = 'blue';  //With whom to swap
 const c3 = 'pink';  //Looking for
 const c4 = "grey";  //Sorted
-const delta = 5;
-var size = 5;
-t=1000;
+var size = 25;
+var lower = 30;
+var upper = 200;
+t=100;
+var playing = true;
+var end = false;
 
 
-const num1 = document.getElementById("num1");
-const num2 = document.getElementById("num2");
+const nums = document.getElementById("nums");
 const comment = document.getElementById("comment");
+const play = document.getElementById("play");
+const stopBtn = document.getElementById("stop");
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,19 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
     renderArray(array);
   
     // Button Event Listeners
-    document.getElementById("startBubbleSort").addEventListener("click", () => bubbleSort(array));
-    document.getElementById("startSelectionSort").addEventListener("click", () => selectionSort(array));
-    document.getElementById("startInsertionSort").addEventListener("click", () => insertionSort(array));
+    document.getElementById("startBubbleSort").addEventListener("click", () => sort(array, "bs"));
+    document.getElementById("startSelectionSort").addEventListener("click", () => sort(array, "ss"));
+    document.getElementById("startInsertionSort").addEventListener("click", () => sort(array, "is"));
+    play.addEventListener("click", () => playPause());
+    stopBtn.addEventListener("click", function(){ end = true });
     document.getElementById("randomizeArray").addEventListener("click", () => {
-      array = generateRandomArray(20);
+      array = generateRandomArray(size);
       renderArray(array);
     });
   
     // Generate a random array
     function generateRandomArray(size) {
+      console.log("Size: ", size)
       const arr = [];
       for (let i = 0; i < size; i++) {
-        arr.push(Math.floor(Math.random() * 80) + 10); // Random number between 10 and 100
+        arr.push(Math.floor(Math.random() * Math.max(upper, 0)) + Math.min(lower, 300)); // Random number between 10 and 100
       }
       return arr;
     }
@@ -64,20 +71,53 @@ document.addEventListener('DOMContentLoaded', () => {
           bar.style.height = `${value}px`;  // Update height
           bar.innerHTML = value;            // Update the value displayed on the bar
         });
+        while(!playing)
+          sleep(1000);
       }
+
+
+      
+  async function sort(arr, algo)
+  {
+    document.getElementById("startBubbleSort").disabled = true;
+    document.getElementById("startInsertionSort").disabled = true;
+    document.getElementById("startSelectionSort").disabled = true;
+    document.getElementById("randomizeArray").disabled = true;
+    end = false;
+    if(play.innerHTML == "Play")  playPause();
+
+    switch (algo) {
+      case "bs":
+        await bubbleSort(arr);
+        break;
+      
+        case "ss":
+          await selectionSort(arr);
+          break;
+
+        
+      case "is":
+        await insertionSort(arr);
+        break;
+    
+      default:
+        break;
+    }
+
+    sortEnd();
+  }
       
   
     // Bubble Sort Algorithm
     async function bubbleSort(arr) {
-        document.getElementById("sortName").innerHTML = "Bubble Sort";
+        document.getElementById("sortName").innerHTML = "Performing Bubble Sort";
         document.getElementById("value").innerHTML = "";
       let n = arr.length;
       for (let i = 0; i < n - 1; i++) {
         for (let j = 0; j < n - i - 1; j++) {
             comment.innerText = "";
             let bars = document.querySelectorAll('.array-bar');
-            num1.innerHTML = bars[j].innerHTML;
-            num2.innerHTML = bars[j+1].innerHTML;
+            nums.innerHTML = `Comparing ${ bars[j].innerHTML} and ${bars[j+1].innerHTML}`;
             bars[j].style.backgroundColor = c1;
             bars[j + 1].style.backgroundColor = c1;
           
@@ -88,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bars[j + 1].style.backgroundColor = c2;
             await sleep(t); // Pause for visualization
             renderArray(arr);
+            if(end) return;
             bars[j].style.backgroundColor = c2;
             bars[j + 1].style.backgroundColor = c1;
             comment.innerText = "Swapped";
@@ -104,11 +145,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       document.querySelectorAll('.array-bar')[0].style.backgroundColor = c4;
       renderArray(arr);
+      if(end) return;
+      sortEnd();
     }
   
     // Selection Sort Algorithm
     async function selectionSort(arr) {
-        document.getElementById("sortName").innerHTML = "Selection Sort";
+        document.getElementById("sortName").innerHTML = "Performing Selection Sort";
         document.getElementById("value").innerHTML = "";
       let n = arr.length;
       for (let i = 0; i < n - 1; i++) {
@@ -129,22 +172,27 @@ document.addEventListener('DOMContentLoaded', () => {
           
          if( bars[j-1].style.backgroundColor == c3) bars[j-1].style.backgroundColor= bg;
           await sleep(t); // Pause for visualization
+          if(end) return;
           bars[minIdx].style.backgroundColor = bg;
           bars[j].style.backgroundColor = bg;
         }
         // Swap the bars
         [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
         renderArray(arr);
+        if(end) return;
         const bars = document.querySelectorAll('.array-bar');
         bars[i].style.backgroundColor = c2;
         bars[minIdx].style.backgroundColor = c1;
         await sleep(t); // Pause for visualization
         renderArray(arr);
+        if(end) return;
         bars[minIdx].style.backgroundColor = bg;
         bars[i].style.backgroundColor = c4;
       }
       document.querySelectorAll('.array-bar')[n-1].style.backgroundColor = c4;
       renderArray(arr);
+      if(end) return;
+      sortEnd();
     }
 
     // Insertion Sort Algorithm
@@ -164,29 +212,36 @@ async function insertionSort(arr) {
         bars[j+1].style.backgroundColor = c1;  // Color for the element being shifted
         await sleep(t); // Pause for visualization
         renderArray(arr); // Update the array visualization
+        if(end) return;
         bars[j].style.backgroundColor = c2;
         await sleep(t); // Pause for visualization
         renderArray(arr); // Update the array visualization
+        if(end) return;
         arr[j + 1] = arr[j];  // Shift element
         renderArray(arr); // Update the array visualization
+        if(end) return;
         await sleep(t); // Pause for visualization
         bars[i].style.backgroundColor = bg;
         j--;
         // bars[j+2].style.backgroundColor = bg;  
         // await sleep(t); // Pause for visualization
         // renderArray(arr); // Update the array visualization
+      if(end) return;
         bars[j+2].style.backgroundColor = bg;
         await sleep(t); // Pause for visualization
         renderArray(arr); // Update the array visualization
+        if(end) return;
       }
       
       // Place the key in its correct position
       arr[j + 1] = key;
       renderArray(arr); // Update the array visualization
+      if(end) return;
       await sleep(t); // Pause for visualization
       bars[j+1].style.backgroundColor = c4; 
       await sleep(t); // Pause for visualization
       renderArray(arr); // Update the array visualization
+      if(end) return;
       
       // Reset the color of the current element after insertion
       bars[i].style.backgroundColor = bg; 
@@ -195,6 +250,8 @@ async function insertionSort(arr) {
   
     // Final render after sorting is complete
     renderArray(arr);
+    if(end) return;
+    sortEnd();
   }
   
   
@@ -205,3 +262,32 @@ async function insertionSort(arr) {
     }
   });
   
+
+  function sortEnd()
+  {
+    document.getElementById("startBubbleSort").disabled = false;
+    document.getElementById("startInsertionSort").disabled = false;
+    document.getElementById("startSelectionSort").disabled = false;
+    document.getElementById("randomizeArray").disabled = false;
+    const bars = document.querySelectorAll(".array-bar")
+    bars.forEach(element => {
+      console.log(element)
+      element.style.backgroundColor = bg;
+    });
+    
+  }
+
+  function playPause()
+  {
+    if (play.innerHTML == "Play")
+    {
+      play.innerHTML = "Pause";
+      playing = true;
+      return;
+    }
+    if(play.innerHTML == "Pause")
+    {
+      play.innerHTML = "Play";
+      playing = false;
+    }
+  }
