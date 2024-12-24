@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sorting Algorithm Visualizer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Sorting Algorithm Visualizer</h1>
+    
+    <div class="controls">
+      <button id="next">Next step</button>
+      <button id="play">Play</button>
+      <button id="startBubbleSort">Start Bubble Sort</button>
+      <button id="startSelectionSort">Start Selection Sort</button>
+      <button id="startInsertionSort">Start Insertion Sort</button>
+    </div>
+
+    <div class="array-container">
+      <div id="array-bar-container"></div>
+    </div>
+
+    <div class="controls">
+      <button id="randomizeArray">Randomize Array</button>
+    </div>
+  </div>
+
+  <p>
+    <div id="first" class="text">
+        Performing <div id="sortName"></div>
+        Comapring <div id="num1"></div> and <div id="num2"></div>
+        <div id="comment"></div>
+    </div>
+    <br>
+    <div id="second">
+        Saved Value <div id="value"></div>
+    </div>
+  </p>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
